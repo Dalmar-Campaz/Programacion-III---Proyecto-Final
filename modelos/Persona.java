@@ -1,10 +1,20 @@
+package modelos;
+
 public abstract class Persona {
     private String nombre;
     private int id;
     private String email;
 
+    public Persona(String nombre, int id, String email) {
+        this.nombre = nombre;
+        this.id = id;
+        this.email = email;
+    }
+
+    public abstract void mostrarInformacion();
+
     public String getNombre() {
-    return nombre;
+        return nombre;
     }
 
     public void setNombre(String nombre) {
@@ -27,5 +37,4 @@ public abstract class Persona {
         this.email = email;
     }
 
-    public abstract void mostrarInformacion();
 }
