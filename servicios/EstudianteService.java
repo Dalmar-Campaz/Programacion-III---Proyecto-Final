@@ -17,7 +17,7 @@ class EstudianteService {
         e.registrarNota(semestre, nota);
     }
 
-    public Estudiante buscarPorId(String idEstudiante) throws EstudianteNoEncontradoException {
+    public Estudiante buscarPorId(String idEstudiante){
         return null;
     }
 }
