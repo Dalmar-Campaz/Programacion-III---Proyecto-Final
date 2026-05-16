@@ -16,15 +16,6 @@ public class Estudiante extends Persona {
         this.historialMaterias = new LinkedList<>();
     }
 
-    @Override
-    public void mostrarInformacion() {
-        System.out.println("=== ESTUDIANTE ===");
-        System.out.println("ID:       " + getId());
-        System.out.println("Nombre:   " + getNombre());
-        System.out.println("Email:    " + getEmail());
-        System.out.println("Semestre: " + semestre);
-    }
-
     public boolean registrarNota(int semestre, double nota) {
         int index = semestre - 1;
         if (index >= 20)
@@ -39,6 +30,9 @@ public class Estudiante extends Persona {
         int index = semestre - 1;
         int cantidad = contadorNotas[index];
         double[] resultado = new double[cantidad];
+        for(int i = 0; i < cantidad; i++){
+            resultado[i] = notas[index][i]; 
+        }
         return resultado;
     }
 
@@ -62,4 +56,12 @@ public class Estudiante extends Persona {
         return historialMaterias;
     }
 
+    @Override
+    public void mostrarInformacion() {
+        System.out.println("=== ESTUDIANTE ===");
+        System.out.println("ID:       " + getId());
+        System.out.println("Nombre:   " + getNombre());
+        System.out.println("Email:    " + getEmail());
+        System.out.println("Semestre: " + semestre);
+    }
 }
