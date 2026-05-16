@@ -1,6 +1,7 @@
 package main;
 
 import estructuras.*;
+import excepciones.HorarioConflictivoException;
 import modelos.*;
 
 public class Main {
