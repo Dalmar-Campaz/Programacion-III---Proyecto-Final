@@ -2,10 +2,10 @@ package modelos;
 
 public abstract class Persona {
     private String nombre;
-    private int id;
+    private String id;
     private String email;
 
-    public Persona(String nombre, int id, String email) {
+    public Persona(String nombre, String id, String email) {
         this.nombre = nombre;
         this.id = id;
         this.email = email;
@@ -21,11 +21,11 @@ public abstract class Persona {
         this.nombre = nombre;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

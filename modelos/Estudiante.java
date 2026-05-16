@@ -8,7 +8,7 @@ public class Estudiante extends Persona {
     private int[] contadorNotas;
     private LinkedList<String> historialMaterias;
 
-    public Estudiante(String nombre, int id, String email, int semestre) {
+    public Estudiante(String nombre, String id, String email, int semestre) {
         super(nombre, id, email);
         this.semestre = semestre;
         this.notas = new double[10][20];
