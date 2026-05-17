@@ -12,15 +12,15 @@ import java.util.HashMap;
 public class MateriaService {
 
     private HashMap<String, Materia> materias;
-    private EstudianteService estudianteServicio;
+    private EstudianteService estudianteService;
     private Pila<Operacion> pilaDeshacer;
     private Pila<Operacion> pilaRehacer;
 
-    public MateriaService(EstudianteService estudianteServicio,
+    public MateriaService(EstudianteService estudianteService,
             Pila<Operacion> pilaDeshacer,
             Pila<Operacion> pilaRehacer) {
         this.materias = new HashMap<>();
-        this.estudianteServicio = estudianteServicio;
+        this.estudianteService = estudianteService;
         this.pilaDeshacer = pilaDeshacer;
         this.pilaRehacer = pilaRehacer;
     }
@@ -54,7 +54,7 @@ public class MateriaService {
             PreRequisitoNoAprobadoException,
             Exception {
 
-        Estudiante e = estudianteServicio.buscarEstudiante(idEstudiante);
+        Estudiante e = estudianteService.buscarEstudiante(idEstudiante);
         Materia m = buscarMateria(codigoMateria);
 
         verificarPrerequisitos(e, m);
@@ -70,10 +70,7 @@ public class MateriaService {
         m.ocuparCupo();
         e.getMateriasInscritas().add(codigoMateria);
 
-        pilaDeshacer.push(new Operacion(
-                Operacion.INSCRIBIR_MATERIA,
-                new String[] { idEstudiante, codigoMateria },
-                "Inscribir " + e.getNombre() + " en " + m.getNombre()));
+        pilaDeshacer.push(new Operacion(Operacion.INSCRIBIR_MATERIA, new String[] { idEstudiante, codigoMateria }, "Inscribir " + e.getNombre() + " en " + m.getNombre()));
 
         System.out.println("Inscripción exitosa: " + e.getNombre() +
                 " en " + m.getNombre() +
@@ -81,12 +78,11 @@ public class MateriaService {
                 (m.getCuposMaximos() - m.getCuposOcupados()) + ")");
     }
 
-    public void cancelarInscripcion(String idEstudiante,
-            String codigoMateria)
+    public void cancelarInscripcion(String idEstudiante, String codigoMateria)
             throws EstudianteNoEncontradoException,
             Exception {
 
-        Estudiante e = estudianteServicio.buscarEstudiante(idEstudiante);
+        Estudiante e = estudianteService.buscarEstudiante(idEstudiante);
         Materia m = buscarMateria(codigoMateria);
 
         m.liberarCupo();
@@ -96,21 +92,16 @@ public class MateriaService {
         String siguienteId = m.siguienteEnEspera();
         if (siguienteId != null) {
             try {
-                Estudiante siguiente = estudianteServicio
-                        .buscarEstudiante(siguienteId);
+                Estudiante siguiente = estudianteService.buscarEstudiante(siguienteId);
                 m.ocuparCupo();
                 siguiente.getMateriasInscritas().add(codigoMateria);
-                System.out.println("Cupo asignado a: " +
-                        siguiente.getNombre() +
-                        " (primer estudiante en cola)");
+                System.out.println("Cupo asignado a: " + siguiente.getNombre() + " (primer estudiante en cola)");
             } catch (EstudianteNoEncontradoException ex) {
-                System.out.println("Estudiante en cola no encontrado: "
-                        + siguienteId);
+                System.out.println("Estudiante en cola no encontrado: " + siguienteId);
             }
         }
 
-        pilaDeshacer.push(new Operacion(
-                Operacion.CANCELAR_INSCRIPCION,
+        pilaDeshacer.push(new Operacion(Operacion.CANCELAR_INSCRIPCION,
                 new String[] { idEstudiante, codigoMateria },
                 "Cancelar inscripción de " + e.getNombre() +
                         " en " + m.getNombre()));
