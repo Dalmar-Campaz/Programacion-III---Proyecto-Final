@@ -7,7 +7,6 @@ public class Aula {
     private boolean[][] horario;
     private String nombre;
     private int capacidad;
-    private int estudiantesInscritos;
 
     private static final String[] NOMBRES_DIAS = {
             "Domingo", "Lunes", "Martes", "Miércoles",
@@ -18,10 +17,9 @@ public class Aula {
         this.nombre = nombre;
         this.capacidad = capacidad;
         this.horario = new boolean[7][24];
-        this.estudiantesInscritos = 0;
     }
 
-    public boolean saberDisponibilidad(int dia, int hora) {
+    public boolean consultarDisponibilidad(int dia, int hora) {
         if (!esValido(dia, hora))
             return false;
         return !horario[dia][hora];
@@ -29,28 +27,6 @@ public class Aula {
 
     private boolean esValido(int dia, int hora) {
         return dia >= 0 && dia <= 6 && hora >= 0 && hora <= 23;
-    }
-
-    public boolean estaLlenaDeEstudiantes() {
-        return estudiantesInscritos >= capacidad;
-    }
-
-    public boolean inscribirEstudiante() {
-        if (estaLlenaDeEstudiantes())
-            return false;
-        estudiantesInscritos++;
-        return true;
-    }
-
-    public boolean retirarEstudiante() {
-        if (estudiantesInscritos == 0)
-            return false;
-        estudiantesInscritos--;
-        return true;
-    }
-
-    public int cuposDisponibles() {
-        return capacidad - estudiantesInscritos;
     }
 
     public void reservar(int dia, int hora, int duracion) throws HorarioConflictivoException {

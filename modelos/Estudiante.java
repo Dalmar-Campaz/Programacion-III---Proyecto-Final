@@ -6,14 +6,16 @@ public class Estudiante extends Persona {
     private int semestre;
     private double[][] notas;
     private int[] contadorNotas;
-    private LinkedList<String> historialMaterias;
+    private LinkedList<String> materiasInscritas;
+    private LinkedList<String> materiasAprovadas;
 
     public Estudiante(String nombre, String id, String email, int semestre) {
         super(nombre, id, email);
         this.semestre = semestre;
         this.notas = new double[10][20];
         this.contadorNotas = new int[10];
-        this.historialMaterias = new LinkedList<>();
+        this.materiasInscritas = new LinkedList<>();
+        this.materiasAprovadas = new LinkedList<>();
     }
 
     public boolean registrarNota(int semestre, double nota) {
@@ -52,8 +54,11 @@ public class Estudiante extends Persona {
         return contadorNotas;
     }
 
-    public LinkedList<String> getHistorialMaterias() {
-        return historialMaterias;
+    public LinkedList<String> getMateriasInscritas() {
+        return materiasInscritas;
+    }
+    public LinkedList<String> getMateriasAprovadas() {
+        return materiasAprovadas;
     }
 
     @Override

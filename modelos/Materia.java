@@ -10,6 +10,7 @@ public class Materia {
     private int creditos;
     private LinkedList<String> prerequisitos;
     private Cola<String> colaEspera;
+    private String aulaAsignada;
 
     public Materia(String nombre, String codigo, int cuposMaximos, int creditos) {
         this.nombre = nombre;
@@ -19,6 +20,7 @@ public class Materia {
         this.cuposOcupados = 0;
         this.prerequisitos = new LinkedList<>();
         this.colaEspera = new Cola<>();
+        this.aulaAsignada = null;
     }
 
     public boolean hayCuposDisponibles() {
@@ -70,7 +72,7 @@ public class Materia {
     public String getCodigo() {
         return codigo;
     }
-    
+
     public Cola<String> getColaEspera() {
         return colaEspera;
     }
@@ -95,4 +97,11 @@ public class Materia {
         return prerequisitos;
     }
 
+    public void setNombreAula(String aulaAsignada) {
+        this.aulaAsignada = aulaAsignada;
+    }
+
+    public String getNombreAula() {
+        return aulaAsignada;
+    }
 }

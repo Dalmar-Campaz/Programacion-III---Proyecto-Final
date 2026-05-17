@@ -4,6 +4,7 @@ public class Operacion {
     public static final String REGISTRAR_ESTUDIANTE = "REGISTRAR_ESTUDIANTE";
     public static final String ELIMINAR_ESTUDIANTE = "ELIMINAR_ESTUDIANTE";
     public static final String INSCRIBIR_MATERIA = "INSCRIBIR_MATERIA";
+    public static final String CAMBIAR_HORARIO_MATERIA = "CAMBIAR_HORARIO_MATERIA";
     public static final String CANCELAR_INSCRIPCION = "CANCELAR_INSCRIPCION";
     public static final String REGISTRAR_NOTA = "REGISTRAR_NOTA";
 
