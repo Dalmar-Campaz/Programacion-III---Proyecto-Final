@@ -50,7 +50,7 @@ public class Estudiante extends Persona {
         return notas;
     }
 
-    public int[] getContadorNotas() {
+    public int[] getCantidadNotas() {
         return contadorNotas;
     }
 
