@@ -74,6 +74,12 @@ public class Aula {
         }
     }
 
+    public void mostrarInformacion() {
+        System.out.println("=== AULA ===");
+        System.out.println("Nombre:    " + nombre);
+        System.out.println("Capacidad: " + capacidad + " estudiantes");
+    }
+
     public String getNombre() {
         return nombre;
     }

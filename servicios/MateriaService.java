@@ -70,7 +70,8 @@ public class MateriaService {
         m.ocuparCupo();
         e.getMateriasInscritas().add(codigoMateria);
 
-        pilaDeshacer.push(new Operacion(Operacion.INSCRIBIR_MATERIA, new String[] { idEstudiante, codigoMateria }, "Inscribir " + e.getNombre() + " en " + m.getNombre()));
+        pilaDeshacer.push(new Operacion(Operacion.INSCRIBIR_MATERIA, new String[] { idEstudiante, codigoMateria },
+                "Inscribir " + e.getNombre() + " en " + m.getNombre()));
 
         System.out.println("Inscripción exitosa: " + e.getNombre() +
                 " en " + m.getNombre() +
