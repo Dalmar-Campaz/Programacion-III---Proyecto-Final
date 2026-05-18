@@ -97,6 +97,19 @@ public class Controlador {
                     System.out.println("Error al deshacer liberación: " + error.getMessage());
                 }
                 break;
+            case Operacion.REGISTRAR_NOTA:
+                // Deshacer nota — reducir el contador del semestre
+                Object[] datosNota = (Object[]) op.getDato();
+                String idEst = (String) datosNota[0];
+                int semestreN = (int) datosNota[2];
+                try {
+                    Estudiante est = estudianteService.buscarEstudiante(idEst);
+                    est.getCantidadNotas()[semestreN - 1]--;
+                    System.out.println("Nota deshecha.");
+                } catch (Exception ex) {
+                    System.out.println("Error al deshacer nota: " + ex.getMessage());
+                }
+                break;
         }
 
         pilaRehacer.push(op);

@@ -9,56 +9,16 @@ import util.Operacion;;
 public class ReporteService {
 
     private EstudianteService estudianteService;
-    private Pila<String> pilaReportes;
     private MateriaService materiaService;
-    private Pila<Operacion> pilaDeshacer;
-    private Pila<Operacion> pilaRehacer;
+    private Pila<String> pilaAtras;
+    private Pila<String> pilaAdelante;
 
     public ReporteService(EstudianteService estudianteService, MateriaService materiaService,
             Pila<Operacion> pilaDeshacer, Pila<Operacion> pilaRehacer) {
         this.estudianteService = estudianteService;
         this.materiaService = materiaService;
-        this.pilaReportes = new Pila<>();
-        this.pilaDeshacer = pilaDeshacer;
-        this.pilaRehacer = pilaRehacer;
-    }
-
-    /**
-     * Este metodo se llama igual que el metodo de la clase Estudiante, pero este se
-     * encarga de
-     * definir si el estudiante aprobo o no la materia, y en base a eso, mueve la
-     * materia de inscritas
-     * a aprobadas o simplemente la elimina de inscritas
-     */
-    public void registrarNota(String idEstudiante, String codigoMateria, int semestre, double nota)
-            throws EstudianteNoEncontradoException, Exception {
-        if (nota < 0.0 || nota > 5.0) {
-            throw new Exception("La nota debe estar entre 0.0 y 5.0");
-        }
-
-        if (semestre < 1 || semestre > 10) {
-            throw new Exception("El semestre debe estar entre 1 y 10");
-        }
-
-        Estudiante e = estudianteService.buscarEstudiante(idEstudiante);
-
-        boolean registrado = e.registrarNota(semestre, nota);
-        if (!registrado) {
-            throw new Exception("No se pudo registrar la nota, el semestre tiene el maximo de notas registradas");
-        }
-
-        if (nota >= 3.0) {
-            e.getMateriasInscritas().delete(codigoMateria);
-            e.getMateriasAprovadas().add(codigoMateria);
-        } else {
-            e.getMateriasInscritas().delete(codigoMateria);
-            System.out.println("El estudiante no aprobó la materia");
-        }
-
-        pilaDeshacer.push(
-                new Operacion(Operacion.REGISTRAR_NOTA, new Object[] { idEstudiante, codigoMateria, semestre, nota },
-                        "Registrar nota: " + nota + " a " + e.getNombre() + " (ID: " + idEstudiante + ")"
-                                + " en materia: " + codigoMateria));
+        this.pilaAdelante = new Pila<>();
+        this.pilaAtras = new Pila<>();
     }
 
     public double calcularPromedioPorSemestre(String idEstudiante, int semestre)
@@ -130,7 +90,7 @@ public class ReporteService {
             }
             double promedio = calcularPromedioPorSemestre(idEstudiante, semestre);
 
-            System.out.println("  Promedio: " + promedio);
+            System.out.printf("  Promedio: %.2f%n", promedio);
             System.out.println("─────────────────────────");
 
             double acumulado = calcularPromedioGeneral(idEstudiante);
@@ -140,6 +100,63 @@ public class ReporteService {
             System.out.println("Materias reprobadas: " + totalReprobadas);
         }
 
-        pilaReportes.push(idEstudiante);
+        pilaAtras.push(idEstudiante);
+    }
+
+    public void reporteAnterior() throws EstudianteNoEncontradoException, Exception {
+        if (pilaAtras.getTamaño() < 2) {
+            System.out.println("No existen reportes anteriores");
+            return;
+        }
+        String actual = pilaAtras.pop();
+        pilaAdelante.push(actual);
+
+        String idAnterior = pilaAtras.peek();
+        generarReporteEstudiante(idAnterior);
+    }
+
+    public void reporteSiguiente() throws EstudianteNoEncontradoException, Exception {
+        if (pilaAdelante.estaVacia()) {
+            System.out.println("No extistes reportes siguientes");
+            return;
+        }
+
+        String idSiguiente = pilaAdelante.pop();
+        pilaAtras.push(idSiguiente);
+
+        generarReporteEstudiante(idSiguiente);
+    }
+
+    public void listarReprobadas(String idEstudiante)
+            throws EstudianteNoEncontradoException {
+
+        Estudiante e = estudianteService.buscarEstudiante(idEstudiante);
+
+        System.out.println("=== MATERIAS REPROBADAS ===");
+        System.out.println("Estudiante: " + e.getNombre());
+
+        boolean hayReprobadas = false;
+
+        for (int semestre = 1; semestre <= 10; semestre++) {
+            double[] notas = e.getNotasPorSemestre(semestre);
+            for (double nota : notas) {
+                if (nota < 3.0) {
+                    System.out.println("Semestre " + semestre +
+                                       ": " + nota + "(Reprobada), ");
+                    hayReprobadas = true;
+                }
+            }
+        }
+
+        if (!hayReprobadas) {
+            System.out.println("No tiene materias reprobadas");
+        }
+    }
+
+    public Pila<String> getPilaAdelante() {
+        return pilaAdelante;
+    }
+    public Pila<String> getPilaAtras() {
+        return pilaAtras;
     }
 }

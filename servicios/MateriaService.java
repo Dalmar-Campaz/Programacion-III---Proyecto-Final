@@ -14,7 +14,6 @@ public class MateriaService {
     private HashMap<String, Materia> materias;
     private EstudianteService estudianteService;
     private Pila<Operacion> pilaDeshacer;
-    private Pila<Operacion> pilaRehacer;
 
     public MateriaService(EstudianteService estudianteService,
             Pila<Operacion> pilaDeshacer,
@@ -22,7 +21,7 @@ public class MateriaService {
         this.materias = new HashMap<>();
         this.estudianteService = estudianteService;
         this.pilaDeshacer = pilaDeshacer;
-        this.pilaRehacer = pilaRehacer;
+
     }
 
     public void crearMateria(String codigo, String nombre,
@@ -130,6 +129,11 @@ public class MateriaService {
         System.out.println("=== COLA DE ESPERA: " + m.getNombre() + " ===");
         System.out.println("En espera: " + m.cantidadEnEspera());
         m.getColaEspera().imprimir();
+    }
+
+    public LinkedList<String> mostrarPrerequisitos(String codigoMateria) throws Exception {
+        Materia m = buscarMateria(codigoMateria);
+        return m.getPrerequisitos();
     }
 
     public void listarMaterias() {
