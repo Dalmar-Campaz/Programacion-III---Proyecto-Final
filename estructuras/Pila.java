@@ -23,15 +23,19 @@ public class Pila<T> {
         return elementos.obtener(0);
     }
 
-    public boolean estaVacia(){
+    public void limpiar() {
+        elementos = new LinkedList<>();
+    }
+
+    public boolean estaVacia() {
         return elementos.estaVacia();
     }
 
-    public int getTamaño(){
+    public int getTamaño() {
         return elementos.getTamaño();
     }
 
-    public void imprimir(){
+    public void imprimir() {
         System.out.print("Cima -> ");
         elementos.imprimir();
     }

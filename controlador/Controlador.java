@@ -98,16 +98,15 @@ public class Controlador {
                 }
                 break;
             case Operacion.REGISTRAR_NOTA:
-                // Deshacer nota — reducir el contador del semestre
                 Object[] datosNota = (Object[]) op.getDato();
                 String idEst = (String) datosNota[0];
                 int semestreN = (int) datosNota[2];
                 try {
                     Estudiante est = estudianteService.buscarEstudiante(idEst);
-                    est.getCantidadNotas()[semestreN - 1]--;
-                    System.out.println("Nota deshecha.");
-                } catch (Exception ex) {
-                    System.out.println("Error al deshacer nota: " + ex.getMessage());
+                    est.getCantidadNotas()[semestreN - 1]++;
+                    System.out.println("Nota rehecha.");
+                } catch (Exception error) {
+                    System.out.println("Error al rehacer nota: " + error.getMessage());
                 }
                 break;
         }
@@ -174,8 +173,7 @@ public class Controlador {
                 break;
 
             case Operacion.LIBERAR_HORARIO:
-                // deshacer → volvía a reservar
-                // rehacer → vuelve a liberar
+
                 Object[] datosLiberar = (Object[]) op.getDato();
                 try {
                     horarioService.liberar(
@@ -186,6 +184,21 @@ public class Controlador {
                     System.out.println("Liberación rehecha.");
                 } catch (Exception error) {
                     System.out.println("Error al rehacer liberación: " + error.getMessage());
+                }
+                break;
+
+            case Operacion.REGISTRAR_NOTA:
+
+                Object[] datosNota = (Object[]) op.getDato();
+                try {
+                    estudianteService.registrarNota(
+                            (String) datosNota[0],
+                            (String) datosNota[1],
+                            (int) datosNota[2],
+                            (double) datosNota[3]);
+                    System.out.println("Nota restaurada.");
+                } catch (Exception error) {
+                    System.out.println("Error al rehacer nota: " + error.getMessage());
                 }
                 break;
         }

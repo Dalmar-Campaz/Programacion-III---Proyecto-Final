@@ -94,10 +94,10 @@ public class LinkedList<T> {
             System.out.print(actual.getDato() + ", ");
             actual = actual.getSiguiente();
         }
-        System.out.println(actual.getDato()+"]");
+        System.out.println(actual.getDato() + "]");
     }
 
-    public void addInicio(T dato){
+    public void addInicio(T dato) {
         Nodo<T> nuevo = new Nodo<>(dato);
         nuevo.setSiguiente(cabeza);
         cabeza = nuevo;
@@ -105,7 +105,8 @@ public class LinkedList<T> {
     }
 
     public void deletePrimero() {
-        if (cabeza == null) return;
+        if (cabeza == null)
+            return;
         cabeza = cabeza.getSiguiente();
         tamaño--;
     }

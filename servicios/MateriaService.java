@@ -14,6 +14,7 @@ public class MateriaService {
     private HashMap<String, Materia> materias;
     private EstudianteService estudianteService;
     private Pila<Operacion> pilaDeshacer;
+    private Pila<Operacion> pilaRehacer;
 
     public MateriaService(EstudianteService estudianteService,
             Pila<Operacion> pilaDeshacer,
@@ -21,7 +22,7 @@ public class MateriaService {
         this.materias = new HashMap<>();
         this.estudianteService = estudianteService;
         this.pilaDeshacer = pilaDeshacer;
-
+        this.pilaRehacer = pilaRehacer;
     }
 
     public void crearMateria(String codigo, String nombre,
@@ -76,6 +77,7 @@ public class MateriaService {
                 " en " + m.getNombre() +
                 " (cupos restantes: " +
                 (m.getCuposMaximos() - m.getCuposOcupados()) + ")");
+        pilaRehacer.limpiar();
     }
 
     public void cancelarInscripcion(String idEstudiante, String codigoMateria)
@@ -105,6 +107,7 @@ public class MateriaService {
                 new String[] { idEstudiante, codigoMateria },
                 "Cancelar inscripción de " + e.getNombre() +
                         " en " + m.getNombre()));
+        pilaRehacer.limpiar();
     }
 
     private void verificarPrerequisitos(Estudiante e, Materia m)

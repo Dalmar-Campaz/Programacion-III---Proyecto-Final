@@ -10,11 +10,13 @@ public class EstudianteService {
 
     private HashMap<String, Estudiante> estudiantes;
     private Pila<Operacion> pilaDeshacer;
+    private Pila<Operacion> pilaRehacer;
 
     public EstudianteService(Pila<Operacion> pilaDeshacer,
             Pila<Operacion> pilaRehacer) {
         this.estudiantes = new HashMap<>();
         this.pilaDeshacer = pilaDeshacer;
+        this.pilaRehacer = pilaRehacer;
     }
 
     public void registrarEstudiante(String nombre, String id,
@@ -23,11 +25,9 @@ public class EstudianteService {
         estudiantes.put(id, nuevo);
 
         pilaDeshacer.push(new Operacion(
-                Operacion.REGISTRAR_ESTUDIANTE,
-                id,
-                "Registrar estudiante: " + nombre + " (ID: " + id + ")"));
-
+                Operacion.REGISTRAR_ESTUDIANTE, id, "Registrar estudiante: " + nombre + " (ID: " + id + ")"));
         System.out.println("Estudiante registrado exitosamente.");
+        pilaRehacer.limpiar();
     }
 
     public void registrarNota(String idEstudiante, String codigoMateria, int semestre, double nota)
@@ -59,6 +59,8 @@ public class EstudianteService {
                 new Operacion(Operacion.REGISTRAR_NOTA, new Object[] { idEstudiante, codigoMateria, semestre, nota },
                         "Registrar nota: " + nota + " a " + e.getNombre() + " (ID: " + idEstudiante + ")"
                                 + " en materia: " + codigoMateria));
+                                
+        pilaRehacer.limpiar();
     }
 
     public Estudiante buscarEstudiante(String id)
@@ -82,6 +84,7 @@ public class EstudianteService {
                 "Eliminar estudiante: " + e.getNombre() + " (ID: " + id + ")"));
 
         System.out.println("Estudiante eliminado exitosamente.");
+        pilaRehacer.limpiar();
     }
 
     public void listarEstudiantes() {

@@ -47,9 +47,8 @@ public class HorarioService {
             throws Exception, HorarioConflictivoException {
 
         Aula a = buscarAula(nombreAula);
-        a.reservar(dia, hora, duracion); // lanza HorarioConflictivoException si hay conflicto
+        a.reservar(dia, hora, duracion); 
 
-        // Guardar en pila — guardamos los 4 datos necesarios para deshacer
         String descripcion = "Reservar " + nombreAula +
                 " día " + dia +
                 " hora " + hora +
@@ -61,6 +60,7 @@ public class HorarioService {
                 descripcion));
 
         System.out.println("Reserva exitosa en aula " + nombreAula);
+        pilaRehacer.limpiar();
     }
 
     public void liberar(String nombreAula, int dia,
@@ -75,6 +75,7 @@ public class HorarioService {
                 "Liberar " + nombreAula + " día " + dia + " hora " + hora));
 
         System.out.println("Horario liberado en aula " + nombreAula);
+        pilaRehacer.limpiar();
     }
 
     public void consultarDisponibilidad(String nombreAula,
