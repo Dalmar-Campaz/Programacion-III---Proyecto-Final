@@ -134,11 +134,6 @@ public class MateriaService {
         m.getColaEspera().imprimir();
     }
 
-    public LinkedList<String> mostrarPrerequisitos(String codigoMateria) throws Exception {
-        Materia m = buscarMateria(codigoMateria);
-        return m.getPrerequisitos();
-    }
-
     public void listarMaterias() {
         if (materias.isEmpty()) {
             System.out.println("No hay materias registradas.");

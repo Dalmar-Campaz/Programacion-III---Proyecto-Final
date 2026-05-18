@@ -1,11 +1,9 @@
 package main;
 
-import excepciones.EstudianteNoEncontradoException;
-import servicios.EstudianteService;
-import estructuras.*;
+import vista.Interfaz;
 
 public class Main {
     public static void main(String[] args) {
-        
+        new Interfaz().iniciar();
     }
 }

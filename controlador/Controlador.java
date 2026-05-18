@@ -41,6 +41,15 @@ public class Controlador {
         }
     }
 
+    public void mostrarPrerequisitos(String codigoMateria) {
+        try {
+            materiaService.buscarMateria(codigoMateria)
+                    .getPrerequisitos().imprimir();
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
     public void eliminarEstudiante(String id) {
         try {
             estudianteService.eliminarEstudiante(id);
@@ -104,7 +113,6 @@ public class Controlador {
         materiaService.listarMaterias();
     }
 
-
     public void crearAula(String nombre, int capacidad) {
         horarioService.crearAula(nombre, capacidad);
     }
@@ -142,7 +150,6 @@ public class Controlador {
     public void listarAulas() {
         horarioService.listarAulas();
     }
-
 
     public void mostrarEdificios() {
         rutaService.mostrarEdificios();
