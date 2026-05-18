@@ -101,7 +101,105 @@ public class Controlador {
         }
     }
 
+    public void listarMaterias() {
+        materiaService.listarMaterias();
+    }
 
+
+    public void crearAula(String nombre, int capacidad) {
+        horarioService.crearAula(nombre, capacidad);
+    }
+
+    public void reservarHorario(String aula, int dia,
+            int hora, int duracion) {
+        try {
+            horarioService.reservar(aula, dia, hora, duracion);
+            if (!deshaciendo)
+                pilaRehacer.limpiar();
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    public void liberarHorario(String aula, int dia,
+            int hora, int duracion) {
+        try {
+            horarioService.liberar(aula, dia, hora, duracion);
+            if (!deshaciendo)
+                pilaRehacer.limpiar();
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    public void consultarDisponibilidad(String aula, int dia, int hora) {
+        try {
+            horarioService.consultarDisponibilidad(aula, dia, hora);
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    public void listarAulas() {
+        horarioService.listarAulas();
+    }
+
+
+    public void mostrarEdificios() {
+        rutaService.mostrarEdificios();
+    }
+
+    public void calcularRuta(int origen, int destino) {
+        rutaService.calcularRuta(origen, destino);
+    }
+
+    public void agregarConexion(int origen, int destino, int metros) {
+        rutaService.agregarConexion(origen, destino, metros);
+    }
+
+    public void registrarNota(String idEstudiante, String codigoMateria,
+            int semestre, double nota) {
+        try {
+            estudianteService.registrarNota(idEstudiante, codigoMateria,
+                    semestre, nota);
+            if (!deshaciendo)
+                pilaRehacer.limpiar();
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    public void generarReporte(String idEstudiante) {
+        try {
+            reporteService.generarReporteEstudiante(idEstudiante);
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    public void reporteAnterior() {
+        try {
+            reporteService.reporteAnterior();
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    public void reporteSiguiente() {
+        try {
+            reporteService.reporteSiguiente();
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    public void listarReprobadas(String idEstudiante) {
+        try {
+            reporteService.listarReprobadas(idEstudiante);
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
 
     public void deshacer() {
         if (pilaDeshacer.estaVacia()) {
