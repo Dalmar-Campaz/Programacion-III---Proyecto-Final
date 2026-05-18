@@ -13,8 +13,7 @@ public class ReporteService {
     private Pila<String> pilaAtras;
     private Pila<String> pilaAdelante;
 
-    public ReporteService(EstudianteService estudianteService, MateriaService materiaService,
-            Pila<Operacion> pilaDeshacer, Pila<Operacion> pilaRehacer) {
+    public ReporteService(EstudianteService estudianteService, MateriaService materiaService) {
         this.estudianteService = estudianteService;
         this.materiaService = materiaService;
         this.pilaAdelante = new Pila<>();

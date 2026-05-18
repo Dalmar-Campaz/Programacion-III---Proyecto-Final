@@ -22,7 +22,7 @@ public class Operacion {
     public Object getDato() {
         return dato;
     }
-    
+
     public String getTipo() {
         return tipo;
     }

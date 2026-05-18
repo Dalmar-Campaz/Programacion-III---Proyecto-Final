@@ -9,9 +9,13 @@ public class Controlador {
 
     private Pila<Operacion> pilaDeshacer;
     private Pila<Operacion> pilaRehacer;
+    private boolean deshaciendo = false;
+
     private HorarioService horarioService;
     private EstudianteService estudianteService;
     private MateriaService materiaService;
+    private ReporteService reporteService;
+    private RutaService rutaService;
 
     public Controlador() {
         this.pilaDeshacer = new Pila<>();
@@ -19,7 +23,85 @@ public class Controlador {
         this.horarioService = new HorarioService(pilaDeshacer, pilaRehacer);
         this.estudianteService = new EstudianteService(pilaDeshacer, pilaRehacer);
         this.materiaService = new MateriaService(estudianteService, pilaDeshacer, pilaRehacer);
+        this.reporteService = new ReporteService(estudianteService, materiaService);
+        this.rutaService = new RutaService();
     }
+
+    public void registrarEstudiante(String nombre, String id,
+            String email, int semestre) {
+        estudianteService.registrarEstudiante(nombre, id, email, semestre);
+        if (!deshaciendo)
+            pilaRehacer.limpiar();
+    }
+
+    public void buscarEstudiante(String id) {
+        try {
+            estudianteService.buscarEstudiante(id).mostrarInformacion();
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    public void eliminarEstudiante(String id) {
+        try {
+            estudianteService.eliminarEstudiante(id);
+            if (!deshaciendo)
+                pilaRehacer.limpiar();
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    public void listarEstudiantes() {
+        estudianteService.listarEstudiantes();
+    }
+
+    public void crearMateria(String codigo, String nombre,
+            int cupos, int creditos) {
+        materiaService.crearMateria(codigo, nombre, cupos, creditos);
+        if (!deshaciendo)
+            pilaRehacer.limpiar();
+    }
+
+    public void agregarPrerequisito(String codigoMateria,
+            String codigoPrerequisito) {
+        try {
+            materiaService.agregarPrerequisito(codigoMateria, codigoPrerequisito);
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    public void inscribir(String idEstudiante, String codigoMateria) {
+        try {
+            materiaService.inscribir(idEstudiante, codigoMateria);
+            if (!deshaciendo)
+                pilaRehacer.limpiar();
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    public void cancelarInscripcion(String idEstudiante,
+            String codigoMateria) {
+        try {
+            materiaService.cancelarInscripcion(idEstudiante, codigoMateria);
+            if (!deshaciendo)
+                pilaRehacer.limpiar();
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    public void mostrarColaEspera(String codigoMateria) {
+        try {
+            materiaService.mostrarColaEspera(codigoMateria);
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+
 
     public void deshacer() {
         if (pilaDeshacer.estaVacia()) {
@@ -27,31 +109,28 @@ public class Controlador {
             return;
         }
 
+        deshaciendo = true;
         Operacion op = pilaDeshacer.pop();
+        System.out.println("Deshaciendo: " + op.getDescripcion());
 
         switch (op.getTipo()) {
 
             case Operacion.REGISTRAR_ESTUDIANTE:
-
-                String id = (String) op.getDato();
-
-                estudianteService.getEstudiantes().remove(id);
-                System.out.println("Estudiante con ID: " + id + " eliminado del sistema.");
+                Estudiante eReg = (Estudiante) op.getDato();
+                estudianteService.getEstudiantes().remove(eReg.getId());
+                System.out.println("Registro deshecho.");
                 break;
 
             case Operacion.ELIMINAR_ESTUDIANTE:
-
-                Estudiante e = (Estudiante) op.getDato();
-                estudianteService.getEstudiantes().put(e.getId(), e);
-                System.out.println("Estudiante restaurado: " + e.getNombre());
+                Estudiante eElim = (Estudiante) op.getDato();
+                estudianteService.getEstudiantes().put(eElim.getId(), eElim);
+                System.out.println("Eliminación deshecha.");
                 break;
 
             case Operacion.INSCRIBIR_MATERIA:
-
-                String[] datos = (String[]) op.getDato();
-
+                String[] datosIns = (String[]) op.getDato();
                 try {
-                    materiaService.cancelarInscripcion(datos[0], datos[1]);
+                    materiaService.cancelarInscripcion(datosIns[0], datosIns[1]);
                 } catch (Exception error) {
                     System.out.println("Error al deshacer inscripción: "
                             + error.getMessage());
@@ -59,58 +138,60 @@ public class Controlador {
                 break;
 
             case Operacion.CANCELAR_INSCRIPCION:
-
-                String[] datosCancelacion = (String[]) op.getDato();
+                String[] datosCan = (String[]) op.getDato();
                 try {
-                    materiaService.inscribir(
-                            datosCancelacion[0], datosCancelacion[1]);
+                    materiaService.inscribir(datosCan[0], datosCan[1]);
                 } catch (Exception error) {
                     System.out.println("Error al deshacer cancelación: "
                             + error.getMessage());
                 }
                 break;
+
             case Operacion.RESERVAR_HORARIO:
-                Object[] datosReserva = (Object[]) op.getDato();
-                String nombreAula = (String) datosReserva[0];
-                int dia = (int) datosReserva[1];
-                int hora = (int) datosReserva[2];
-                int duracion = (int) datosReserva[3];
+                Object[] datosRes = (Object[]) op.getDato();
+                String nombreAula = (String) datosRes[0];
+                int dia = (int) datosRes[1];
+                int hora = (int) datosRes[2];
+                int duracion = (int) datosRes[3];
                 try {
                     horarioService.liberar(nombreAula, dia, hora, duracion);
                     System.out.println("Reserva deshecha en aula " + nombreAula);
                 } catch (Exception error) {
-                    System.out.println("Error al deshacer reserva: " + error.getMessage());
+                    System.out.println("Error al deshacer reserva: "
+                            + error.getMessage());
                 }
                 break;
 
             case Operacion.LIBERAR_HORARIO:
-
-                Object[] datosLiberar = (Object[]) op.getDato();
+                Object[] datosLib = (Object[]) op.getDato();
                 try {
                     horarioService.reservar(
-                            (String) datosLiberar[0],
-                            (int) datosLiberar[1],
-                            (int) datosLiberar[2],
-                            (int) datosLiberar[3]);
+                            (String) datosLib[0],
+                            (int) datosLib[1],
+                            (int) datosLib[2],
+                            (int) datosLib[3]);
                     System.out.println("Liberación deshecha.");
                 } catch (Exception error) {
-                    System.out.println("Error al deshacer liberación: " + error.getMessage());
+                    System.out.println("Error al deshacer liberación: "
+                            + error.getMessage());
                 }
                 break;
+
             case Operacion.REGISTRAR_NOTA:
                 Object[] datosNota = (Object[]) op.getDato();
-                String idEst = (String) datosNota[0];
-                int semestreN = (int) datosNota[2];
                 try {
-                    Estudiante est = estudianteService.buscarEstudiante(idEst);
-                    est.getCantidadNotas()[semestreN - 1]++;
-                    System.out.println("Nota rehecha.");
+                    Estudiante est = estudianteService
+                            .buscarEstudiante((String) datosNota[0]);
+                    est.getCantidadNotas()[(int) datosNota[2] - 1]--;
+                    System.out.println("Nota deshecha.");
                 } catch (Exception error) {
-                    System.out.println("Error al rehacer nota: " + error.getMessage());
+                    System.out.println("Error al deshacer nota: "
+                            + error.getMessage());
                 }
                 break;
         }
 
+        deshaciendo = false;
         pilaRehacer.push(op);
     }
 
@@ -120,27 +201,28 @@ public class Controlador {
             return;
         }
 
+        deshaciendo = true;
         Operacion op = pilaRehacer.pop();
+        System.out.println("Rehaciendo: " + op.getDescripcion());
 
-        // La lógica es inversa a deshacer
         switch (op.getTipo()) {
+
             case Operacion.REGISTRAR_ESTUDIANTE:
-                Estudiante e = (Estudiante) op.getDato();
-                estudianteService.getEstudiantes().put(e.getId(), e);
-                System.out.println("Estudiante registrado nuevamente con ID: " + e.getId());
+                Estudiante eReg = (Estudiante) op.getDato();
+                estudianteService.getEstudiantes().put(eReg.getId(), eReg);
+                System.out.println("Registro rehecho.");
                 break;
 
             case Operacion.ELIMINAR_ESTUDIANTE:
-                String id = (String) op.getDato();
-
-                estudianteService.getEstudiantes().remove(id);
-                System.out.println("Estudiante con ID: " + id + " eliminado del sistema.");
+                Estudiante eElim = (Estudiante) op.getDato();
+                estudianteService.getEstudiantes().remove(eElim.getId());
+                System.out.println("Eliminación rehecha.");
                 break;
 
             case Operacion.INSCRIBIR_MATERIA:
-                String[] datos = (String[]) op.getDato();
+                String[] datosIns = (String[]) op.getDato();
                 try {
-                    materiaService.inscribir(datos[0], datos[1]);
+                    materiaService.inscribir(datosIns[0], datosIns[1]);
                 } catch (Exception error) {
                     System.out.println("Error al rehacer inscripción: "
                             + error.getMessage());
@@ -148,47 +230,46 @@ public class Controlador {
                 break;
 
             case Operacion.CANCELAR_INSCRIPCION:
-
-                String[] datosCancelacion = (String[]) op.getDato();
+                String[] datosCan = (String[]) op.getDato();
                 try {
-                    materiaService.cancelarInscripcion(datosCancelacion[0], datosCancelacion[1]);
+                    materiaService.cancelarInscripcion(datosCan[0], datosCan[1]);
                 } catch (Exception error) {
-                    System.out.println("Error al rehacer cancelación: " + error.getMessage());
+                    System.out.println("Error al rehacer cancelación: "
+                            + error.getMessage());
                 }
                 break;
 
             case Operacion.RESERVAR_HORARIO:
-
-                Object[] datosReserva = (Object[]) op.getDato();
+                Object[] datosRes = (Object[]) op.getDato();
                 try {
                     horarioService.reservar(
-                            (String) datosReserva[0],
-                            (int) datosReserva[1],
-                            (int) datosReserva[2],
-                            (int) datosReserva[3]);
+                            (String) datosRes[0],
+                            (int) datosRes[1],
+                            (int) datosRes[2],
+                            (int) datosRes[3]);
                     System.out.println("Reserva rehecha.");
                 } catch (Exception error) {
-                    System.out.println("Error al rehacer reserva: " + error.getMessage());
+                    System.out.println("Error al rehacer reserva: "
+                            + error.getMessage());
                 }
                 break;
 
             case Operacion.LIBERAR_HORARIO:
-
-                Object[] datosLiberar = (Object[]) op.getDato();
+                Object[] datosLib = (Object[]) op.getDato();
                 try {
                     horarioService.liberar(
-                            (String) datosLiberar[0],
-                            (int) datosLiberar[1],
-                            (int) datosLiberar[2],
-                            (int) datosLiberar[3]);
+                            (String) datosLib[0],
+                            (int) datosLib[1],
+                            (int) datosLib[2],
+                            (int) datosLib[3]);
                     System.out.println("Liberación rehecha.");
                 } catch (Exception error) {
-                    System.out.println("Error al rehacer liberación: " + error.getMessage());
+                    System.out.println("Error al rehacer liberación: "
+                            + error.getMessage());
                 }
                 break;
 
             case Operacion.REGISTRAR_NOTA:
-
                 Object[] datosNota = (Object[]) op.getDato();
                 try {
                     estudianteService.registrarNota(
@@ -196,13 +277,15 @@ public class Controlador {
                             (String) datosNota[1],
                             (int) datosNota[2],
                             (double) datosNota[3]);
-                    System.out.println("Nota restaurada.");
+                    System.out.println("Nota rehecha.");
                 } catch (Exception error) {
-                    System.out.println("Error al rehacer nota: " + error.getMessage());
+                    System.out.println("Error al rehacer nota: "
+                            + error.getMessage());
                 }
                 break;
         }
 
+        deshaciendo = false;
         pilaDeshacer.push(op);
     }
 }
