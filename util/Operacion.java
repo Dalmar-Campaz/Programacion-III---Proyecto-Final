@@ -8,6 +8,8 @@ public class Operacion {
     public static final String LIBERAR_HORARIO = "LIBERAR_HORARIO";
     public static final String CANCELAR_INSCRIPCION = "CANCELAR_INSCRIPCION";
     public static final String REGISTRAR_NOTA = "REGISTRAR_NOTA";
+    public static final String CREAR_MATERIA = "CREAR_MATERIA";
+    public static final String ELIMINAR_MATERIA = "ELIMINAR_MATERIA";
 
     private String tipo;
     private Object dato;

@@ -30,6 +30,15 @@ public class MateriaService {
         Materia nueva = new Materia(codigo, nombre, cuposMaximos, creditos);
         materias.put(codigo, nueva);
         System.out.println("Materia creada: " + nombre + " (" + codigo + ")");
+        pilaDeshacer.push(new Operacion(Operacion.CREAR_MATERIA, new String[] { codigo, nombre, String.valueOf(cuposMaximos), String.valueOf(creditos) },
+                "Crear materia: " + nombre));
+    }
+    public void eliminarMateria(String codigo) throws Exception {
+        Materia m = buscarMateria(codigo);
+        materias.remove(codigo);
+        System.out.println("Materia eliminada: " + m.getNombre() + " (" + codigo + ")");
+        pilaDeshacer.push(new Operacion(Operacion.ELIMINAR_MATERIA, new String[] { codigo, m.getNombre(), String.valueOf(m.getCuposMaximos()), String.valueOf(m.getCreditos()) },
+                "Eliminar materia: " + m.getNombre()));
     }
 
     public Materia buscarMateria(String codigo)

@@ -293,6 +293,32 @@ public class Controlador {
                             + error.getMessage());
                 }
                 break;
+
+            case Operacion.CREAR_MATERIA:
+                String[] datosMat = (String[]) op.getDato();
+                String codigo = datosMat[0];
+                try {
+                    materiaService.eliminarMateria(codigo);
+                    System.out.println("Materia deshecha.");
+                } catch (Exception error) {
+                    System.out.println("Error al deshacer materia: "
+                            + error.getMessage());
+                }
+                break;
+            
+                case Operacion.ELIMINAR_MATERIA:
+                String[] datosMatElim = (String[]) op.getDato();
+                String codigoElim = datosMatElim[0];
+                String nombreElim = datosMatElim[1];
+                int cuposElim = Integer.parseInt(datosMatElim[2]);
+                int creditosElim = Integer.parseInt(datosMatElim[3]);
+                try {
+                    materiaService.crearMateria(codigoElim, nombreElim, cuposElim, creditosElim);
+                    System.out.println("Materia eliminada deshecha.");
+                } catch (Exception error) {
+                    System.out.println("Error al deshacer eliminación de materia: "
+                            + error.getMessage());
+                }
         }
 
         deshaciendo = false;
@@ -387,6 +413,32 @@ public class Controlador {
                             + error.getMessage());
                 }
                 break;
+
+            case Operacion.CREAR_MATERIA:
+                String[] datosMat = (String[]) op.getDato();
+                String codigo = datosMat[0];
+                String nombre = datosMat[1];
+                int cupos = Integer.parseInt(datosMat[2]);
+                int creditos = Integer.parseInt(datosMat[3]);
+                try {
+                    materiaService.crearMateria(codigo, nombre, cupos, creditos);
+                    System.out.println("Materia rehecha.");
+                } catch (Exception error) {
+                    System.out.println("Error al rehacer materia: "
+                            + error.getMessage());
+                }
+                break;
+
+            case Operacion.ELIMINAR_MATERIA:
+                String[] datosMatElim = (String[]) op.getDato();
+                String codigoElim = datosMatElim[0];
+                try {
+                    materiaService.eliminarMateria(codigoElim);
+                    System.out.println("Materia eliminada rehecha.");
+                } catch (Exception error) {
+                    System.out.println("Error al rehacer eliminación de materia: "
+                            + error.getMessage());
+                }
         }
 
         deshaciendo = false;
